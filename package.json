@@ -79,7 +79,7 @@
     ]
   },
   "dependencies": {
-    "@prisma/client": "^5.18.0",
+    "@prisma/client": "^6.17.0",
     "ioredis": "^5.8.1",
     "lodash-es": "^4.17.21",
     "micromatch": "^4.0.7",
@@ -87,6 +87,7 @@
     "promise-coalesce": "^1.1.2"
   },
   "peerDependencies": {
+    "@prisma/client": ">=5.18",
     "ioredis": "^5.8.1"
   }
 }
