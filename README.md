@@ -1,4 +1,3 @@
-
 # Prisma Extension Redis
 
 [![test](https://github.com/yxx4c/prisma-extension-redis/actions/workflows/test.yml/badge.svg)](https://github.com/yxx4c/prisma-extension-redis/actions/workflows/test.yml)
@@ -51,18 +50,16 @@ bun add prisma-extension-redis
 Before setting up caching, initialize your Prisma client, Redis client config, and logger:
 
 ```javascript
-import pino from 'pino';
-import { PrismaClient } from '@prisma/client';
-import { Redis } from 'iovalkey';
-import {SuperJSON} from 'superjson';
+import pino from "pino";
+import { PrismaClient } from "@prisma/client";
+import { SuperJSON } from "superjson";
 
 import {
   CacheCase,
   PrismaExtensionRedis,
   type AutoCacheConfig,
   type CacheConfig,
-} from 'prisma-extension-redis';
-
+} from "prisma-extension-redis";
 
 // Prisma Client
 const prisma = new PrismaClient();
@@ -70,7 +67,7 @@ const prisma = new PrismaClient();
 // Redis client config
 const client = {
   host: process.env.REDIS_HOST_NAME, // Redis host
-  port: process.env.REDIS_PORT,      // Redis port
+  port: process.env.REDIS_PORT, // Redis port
 };
 
 // Create a logger using pino (optional)
@@ -85,13 +82,13 @@ const logger = pino();
 
 ```javascript
 const auto: AutoCacheConfig = {
-  excludedModels: ['Post'], // Models excluded from auto-caching
-  excludedOperations: ['findFirst', 'count', 'findMany'], // Operations excluded from auto-caching
+  excludedModels: ["Post"], // Models excluded from auto-caching
+  excludedOperations: ["findFirst", "count", "findMany"], // Operations excluded from auto-caching
   models: [
     {
-      model: 'User', // Model-specific auto-cache settings
-      excludedOperations: ['count'], // Operations to exclude
-      ttl: 10,  // Time-to-live (TTL) for cache in seconds
+      model: "User", // Model-specific auto-cache settings
+      excludedOperations: ["count"], // Operations to exclude
+      ttl: 10, // Time-to-live (TTL) for cache in seconds
       stale: 5, // Stale time in seconds
     },
   ],
@@ -101,8 +98,8 @@ const auto: AutoCacheConfig = {
 
 **Note**:
 
- 1. Excluded operations and models will not benefit from auto-caching.
- 2. Use `ttl` and `stale` values to define caching duration.
+1.  Excluded operations and models will not benefit from auto-caching.
+2.  Use `ttl` and `stale` values to define caching duration.
 
 ### Step 3: Configure Cache Client
 
@@ -112,20 +109,21 @@ The cache client configuration is necessary to enable caching, either automatica
 
 ```javascript
 const config: CacheConfig = {
- ttl: 60, // Default Time-to-live for caching in seconds
+  ttl: 60, // Default Time-to-live for caching in seconds
   stale: 30, // Default Stale time after ttl in seconds
   auto, // Auto-caching options (configured above)
   logger, // Logger for cache events (configured above)
   transformer: {
     // Custom serialize and deserialize function for additional functionality if required
-    deserialize: data => SuperJSON.parse(data),
-    serialize: data => SuperJSON.stringify(data),
+    deserialize: (data) => SuperJSON.parse(data),
+    serialize: (data) => SuperJSON.stringify(data),
   },
-  type: 'JSON', // Redis cache type, whether you prefer the data to be stored as JSON or STRING in Redis
-  cacheKey: { // Inbuilt cache key configuration
+  type: "JSON", // Redis cache type, whether you prefer the data to be stored as JSON or STRING in Redis
+  cacheKey: {
+    // Inbuilt cache key configuration
     case: CacheCase.SNAKE_CASE, // Select a cache case conversion option for generated keys from CacheCase
-    delimiter: '*', // Delimiter for keys (default value: ':')
-    prefix: 'awesomeness', // Cache key prefix (default value: 'prisma')
+    delimiter: "*", // Delimiter for keys (default value: ':')
+    prefix: "awesomeness", // Cache key prefix (default value: 'prisma')
   },
 };
 ```
@@ -137,6 +135,17 @@ const config: CacheConfig = {
 Now, extend your Prisma client with caching capabilities using `prisma-extension-redis`:
 
 ```javascript
+const extendedPrisma = prisma.$extends(
+  PrismaExtensionRedis({ config, client })
+);
+```
+
+### Alternative: Use your own ioredis client
+
+```javascript
+import { Redis } from "ioredis"; // It can be 'iovalkey' as well
+
+const client = new Redis();
 const extendedPrisma = prisma.$extends(
   PrismaExtensionRedis({ config, client })
 );
@@ -183,7 +192,9 @@ For greater control over caching, generate custom cache keys and TTL settings.
 **Example with Custom Cache Key:**
 
 ```javascript
-const customKey = extendedPrisma.getKey({ params: [{ prisma: 'User' }, { id: userId }] });
+const customKey = extendedPrisma.getKey({
+  params: [{ prisma: "User" }, { id: userId }],
+});
 
 extendedPrisma.user.findUnique({
   where: { id: userId },
@@ -204,9 +215,13 @@ extendedPrisma.user.update({
   data: { username: newUsername },
   uncache: {
     uncacheKeys: [
-      extendedPrisma.getKey({ params: [{ prisma: 'User' }, { id: userId }] }), // Specific key to invalidate
-      extendedPrisma.getKeyPattern({ params: [{ prisma: '*' }, { id: userId }]}), // Pattern for wildcard invalidation
-      extendedPrisma.getKeyPattern({ params: [{ prisma: 'Post' }, { id: userId }, { glob: '*' }]}), // Use glob for more complex patterns
+      extendedPrisma.getKey({ params: [{ prisma: "User" }, { id: userId }] }), // Specific key to invalidate
+      extendedPrisma.getKeyPattern({
+        params: [{ prisma: "*" }, { id: userId }],
+      }), // Pattern for wildcard invalidation
+      extendedPrisma.getKeyPattern({
+        params: [{ prisma: "Post" }, { id: userId }, { glob: "*" }],
+      }), // Use glob for more complex patterns
     ],
     hasPattern: true, // Use pattern matching for invalidation
   },
