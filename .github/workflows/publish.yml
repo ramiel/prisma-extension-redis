@@ -3,9 +3,7 @@ name: publish
 on:
   push:
     branches:
-      - main
-      - next
-      - beta
+      - custom-package
 
 permissions:
   contents: read
