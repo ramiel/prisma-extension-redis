@@ -1,5 +1,5 @@
 {
-  "name": "@ramiel/prisma-extension-redis",
+  "name": "@ramielcreations/prisma-extension-redis",
   "version": "3.0.1",
   "description": "Extensive Prisma extension designed for efficient caching and cache invalidation using Redis and Dragonfly Databases",
   "repository": {
