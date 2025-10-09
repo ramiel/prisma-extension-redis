@@ -383,7 +383,7 @@ export interface PrismaExtensionRedisOptions {
   /**
    * Redis client config (iovalkey)
    */
-  client: ConstructorParameters<typeof Redis> | Redis;
+  client: RedisOptions | Redis;
 }
 
 export type DeletePatterns = {

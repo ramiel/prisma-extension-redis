@@ -22,7 +22,7 @@ export const PrismaExtensionRedis = (options: PrismaExtensionRedisOptions) => {
 
   const { delimiter, case: cacheCase, prefix } = cacheKey ?? {};
 
-  const redis = Array.isArray(redisOptions) ? new Redis(...redisOptions) : redisOptions;
+  const redis = redisOptions instanceof Redis ? redisOptions : new Redis(redisOptions)
 
   const getKey = getKeyGen(delimiter, cacheCase, prefix);
   const getAutoKey = getAutoKeyGen(getKey);
