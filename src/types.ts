@@ -4,7 +4,7 @@ import type {
   ModelQueryOptionsCbArgs,
   Operation,
 } from '@prisma/client/runtime/library';
-import type { Redis, RedisOptions } from 'iovalkey';
+import type { Redis, RedisOptions } from 'ioredis';
 
 import type { CacheCase } from './cacheKey';
 

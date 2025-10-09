@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client/extension';
-import Redis from 'iovalkey';
+import Redis from 'ioredis';
 
 import {
   autoCacheAction,
