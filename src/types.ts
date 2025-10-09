@@ -1,12 +1,12 @@
-import type {Prisma} from '@prisma/client/extension';
+import type { Prisma } from '@prisma/client/extension';
 import type {
   JsArgs,
   ModelQueryOptionsCbArgs,
   Operation,
 } from '@prisma/client/runtime/library';
-import type {Redis, RedisOptions} from 'iovalkey';
+import type { Redis, RedisOptions } from 'ioredis';
 
-import type {CacheCase} from './cacheKey';
+import type { CacheCase } from './cacheKey';
 
 export const ALL_OPERATIONS = [
   '$executeRaw',
@@ -219,17 +219,17 @@ type ModelExtension<
   M extends 'auto' | 'cache' | 'uncache',
 > = {
   [RO in Config['requiredArg'][number]]: M extends 'auto'
-    ? AutoRequiredArgsFunction<RO>
-    : M extends 'cache'
-      ? CacheRequiredArgsFunction<RO>
-      : UncacheRequiredArgsFunction<RO>;
+  ? AutoRequiredArgsFunction<RO>
+  : M extends 'cache'
+  ? CacheRequiredArgsFunction<RO>
+  : UncacheRequiredArgsFunction<RO>;
 } & {
-  [OO in Config['optionalArg'][number]]: M extends 'auto'
+    [OO in Config['optionalArg'][number]]: M extends 'auto'
     ? AutoOptionalArgsFunction<OO>
     : M extends 'cache'
-      ? CacheOptionalArgsFunction<OO>
-      : UncacheOptionalArgsFunction<OO>;
-};
+    ? CacheOptionalArgsFunction<OO>
+    : UncacheOptionalArgsFunction<OO>;
+  };
 
 type autoConfig = {
   requiredArg: (typeof AUTO_REQUIRED_ARG_OPERATIONS)[number][];
@@ -347,31 +347,31 @@ export interface ModelConfig {
 
 export type AutoCacheConfig =
   | {
-      /**
-       * Default excluded models
-       */
-      excludedModels?: string[];
+    /**
+     * Default excluded models
+     */
+    excludedModels?: string[];
 
-      /**
-       * Default excluded cache operations
-       */
-      excludedOperations?: autoOperations[];
+    /**
+     * Default excluded cache operations
+     */
+    excludedOperations?: autoOperations[];
 
-      /**
-       * Default model configuration
-       */
-      models?: ModelConfig[];
+    /**
+     * Default model configuration
+     */
+    models?: ModelConfig[];
 
-      /**
-       * Auto stale time after ttl
-       */
-      stale?: number;
+    /**
+     * Auto stale time after ttl
+     */
+    stale?: number;
 
-      /**
-       * Auto time-to-live (ttl) value
-       */
-      ttl?: number;
-    }
+    /**
+     * Auto time-to-live (ttl) value
+     */
+    ttl?: number;
+  }
   | boolean;
 
 export interface PrismaExtensionRedisOptions {
@@ -383,7 +383,7 @@ export interface PrismaExtensionRedisOptions {
   /**
    * Redis client config (iovalkey)
    */
-  client: RedisOptions;
+  client: ConstructorParameters<typeof Redis> | Redis;
 }
 
 export type DeletePatterns = {
